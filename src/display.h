@@ -7,6 +7,8 @@
 enum Frames
 {
     Default,
+    Main,
+    Stats,
     Rates,
     Settings
 };
@@ -28,7 +30,7 @@ private:
     bool wifiConnected = false;
     float voltage = 0;
     String lastSummaryUpdate = "";
-    int frames[2] = {Frames::Default, Frames::Rates};
+    int frames[4] = {Frames::Main, Frames::Stats};
     int settingsFrames[1] = {Frames::Settings};
     int frameIndex = 0;
     int mode = 0;
@@ -38,6 +40,8 @@ private:
     Clock &clockHelper;
     void horizontalDrawDefault();
     void verticalDrawDefault();
+    void verticalDrawMain();
+    void verticaldrawStats();
     void verticalDrawRates();
     void verticalDrawSettings();
     void drawStatus();
