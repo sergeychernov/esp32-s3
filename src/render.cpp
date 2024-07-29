@@ -101,6 +101,105 @@ int16_t Render::drawSummary(JsonDocument summary, uint8_t line, int32_t x)
     return 0;
 }
 
+int16_t Render::drawMain(JsonDocument summary, uint8_t line, int32_t x)
+{
+    if (!summary.isNull())
+    {
+        uint8_t stringHeight = 2;
+        uint8_t row = line;
+
+        JsonObject rates = summary["rates"];
+        JsonObject assets = summary["assets"];
+
+        int current = (int)summary["current"];
+        int in = (int)summary["in"];
+        const char *currency = summary["currency"];
+        JsonObject currencyAmounts = summary["currencyAmounts"];
+        int thousands = current / 1000;
+        int units = current % 1000;
+        int unitsLenght = String(units).length();
+        String zeroText = "";
+
+        if(unitsLenght == 1){
+            zeroText = "00";
+        }else if(unitsLenght == 2){
+            zeroText = "0";
+        }
+
+        int16_t maxdx = 0;
+
+        int dxThousands = drawString(String(thousands), row, x, 4, TFT_GOLD);
+        int dxUnits = drawString(String(units) + zeroText, row, x + dxThousands, 2, TFT_GOLD);
+        row += 2;
+        int dxCurrency = drawString(currency,row, x + dxThousands, 2);
+        row += 2;
+
+        maxdx = dxCurrency;
+
+        for (JsonObject::iterator it = rates.begin(); it != rates.end(); ++it)
+        {
+            const char *key = it->key().c_str();
+            const double value = it->value();
+            int16_t dx = 0;
+
+            if (value && assets[key])
+            {
+                double amount = value * double(assets[key]);
+
+                row += stringHeight;
+                dx += drawString(String(key), row, x, stringHeight, TFT_WHITE);
+                dx += drawString(String(double(assets[key])), row, x + dx + 2, 2, TFT_GREEN);
+                row += stringHeight;
+                drawString(String(amount) + String(currency), row, x, 1, TFT_GREEN);
+                row += 1;
+
+                maxdx = max(dx, maxdx);
+            }
+        }
+       
+        return maxdx;
+    }
+    return 0;
+}
+
+int16_t Render::drawStats(JsonDocument summary, uint8_t line, int32_t x)
+{
+    if (!summary.isNull())
+    {
+        uint8_t stringHeight = 4;
+        uint8_t row = line;
+        int16_t dx1 = 0, dx2 = 0, dx3 = 0;
+
+        int current = (int)summary["current"];
+
+        int diff24h = current - (int)summary["diff24"];
+        int diff7d = current -(int)summary["diff7d"];
+        int diff30d = current -(int)summary["diff30d"];
+
+        int16_t maxdx = 0;
+
+        dx1 += drawString("24h", row, x, stringHeight, TFT_WHITE);
+        row += stringHeight;
+        dx1 += drawString((diff24h > 0 ? "+" : "") + String(diff24h), row, x, 3, diff24h >= 0 ? TFT_GREEN : TFT_RED );
+        row += stringHeight;
+        
+        dx2 += drawString("7d", row, x, stringHeight, TFT_WHITE);
+        row += stringHeight;
+        dx2 += drawString((diff7d > 0 ? "+" : "") + String(diff7d), row, x, 3, diff7d >= 0 ? TFT_GREEN : TFT_RED );
+        row += stringHeight;
+
+        dx3 += drawString("30d", row, x, stringHeight, TFT_WHITE);
+        row += stringHeight;
+        dx3 += drawString((diff30d > 0 ? "+" : "") + String(diff30d), row, x, 3, diff30d >= 0 ? TFT_GREEN : TFT_RED );
+        row += stringHeight;
+      
+        maxdx = max(max(dx1, dx2), max(dx3, maxdx));
+
+        return maxdx;
+    }
+    return 0;
+}
+
 int16_t Render::drawRates(JsonDocument summary, uint8_t line, int32_t x)
 {
     int16_t maxdx = 0;

@@ -25,6 +25,8 @@ public:
         int32_t x = 0);
     int16_t drawString(String input, uint8_t line, int32_t x = 0, uint8_t size = 1, uint16_t fgcolor = TFT_WHITE);
     int16_t drawSummary(JsonDocument summary, uint8_t line = 0, int32_t x = 0);
+    int16_t drawMain(JsonDocument summary, uint8_t line = 0, int32_t x = 0);
+    int16_t drawStats(JsonDocument summary, uint8_t line = 0, int32_t x = 0);
     int16_t drawRates(JsonDocument summary, uint8_t line = 0, int32_t x = 0);
     int16_t drawQRCode(String input, uint8_t dx = 20, uint8_t dy = 20);
     int16_t drawTime(Clock clockHelper, uint8_t line = 0, int32_t x = 0);

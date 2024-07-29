@@ -43,16 +43,11 @@ void Display::draw(){
         switch (frame)
         {
         default:
-        case Frames::Default:
-
-            verticalDrawDefault();
-
+        case Frames::Main:
+            verticalDrawMain();
             break;
-        case Frames::Rates:
-            verticalDrawRates();
-            break;
-        case Frames::Settings:
-            verticalDrawSettings();
+        case Frames::Stats:
+            verticaldrawStats();
             break;
         }
     }
@@ -96,6 +91,31 @@ void Display::verticalDrawDefault()
     if (!summary.isNull())
     {
         render.drawSummary(summary);
+    }
+
+}
+
+void Display::verticalDrawMain()
+{
+
+    drawStatus();
+
+    if (!summary.isNull())
+    {
+        render.drawMain(summary);
+    }
+
+}
+
+void Display::verticaldrawStats()
+{
+
+    drawStatus();
+    render.drawTime(clockHelper, 27);
+    
+    if (!summary.isNull())
+    {
+        render.drawStats(summary);
     }
 
 }
